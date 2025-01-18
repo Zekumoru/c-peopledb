@@ -45,10 +45,20 @@ int main()
   if (!fp)
     return EXIT_FAILURE;
 
-  // populatePeople(fp, &personMeta);
-  // printf("Database has been populated!\n");
+  populatePeople(fp, &personMeta);
+  printf("Database has been populated!\n");
 
-  Person* people = readPeople(fp);
+  Person* people;
+
+  people = readPeople(fp);
+  printPeople(people, personMeta.count);
+
+  freePeople(people, personMeta.count);
+  free(people);
+
+  deletePerson(&fp, &personMeta, 1);
+
+  people = readPeople(fp);
   printPeople(people, personMeta.count);
 
   freePeople(people, personMeta.count);

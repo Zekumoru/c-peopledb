@@ -95,10 +95,15 @@ Person* readPeople(FILE* fp)
 
 void insertPerson(FILE* fp, Person* person, PersonMeta* meta)
 {
-  person->id = meta->autoIncrementId;
-  meta->count++;
-  meta->autoIncrementId++;
-  updatePersonMeta(fp, meta);
+  if (meta != NULL)
+  {
+    person->id = meta->autoIncrementId;
+    meta->count++;
+    meta->autoIncrementId++;
+    updatePersonMeta(fp, meta);
+  }
+
+  fseek(fp, 0, SEEK_END);
 
   fwrite(&person->id, sizeof(size_t), 1, fp);
 
@@ -108,6 +113,24 @@ void insertPerson(FILE* fp, Person* person, PersonMeta* meta)
   size_t nameLength = strlen(person->name) + 1; // +1 because of '\0'
   fwrite(&nameLength, sizeof(size_t), 1, fp);
   fwrite(person->name, sizeof(char), nameLength, fp);
+}
+
+Person* findPersonById(FILE* fp, const size_t id)
+{
+  const size_t end = getEndAndSeekToFirstPerson(fp);
+  while (ftell(fp) < end)
+  {
+    Person* person = (Person*)malloc(sizeof(Person));
+    loadPerson(fp, person);
+    if (person->id == id)
+    {
+      return person;
+    }
+    freePerson(person);
+    free(person);
+  }
+
+  return NULL;
 }
 
 Person* findPerson(FILE* fp, const char* name)
@@ -126,6 +149,50 @@ Person* findPerson(FILE* fp, const char* name)
   }
 
   return NULL;
+}
+
+bool deletePerson(FILE** fpPtr, PersonMeta* meta, const size_t id)
+{
+  FILE* fp = *fpPtr;
+
+  // Check first if it exists before creating a new file to delete
+  Person* person = findPersonById(fp, id);
+  if (person == NULL)
+  {
+    return false;
+  }
+
+  freePerson(person);
+  free(person);
+
+  FILE* newFp = fopen("people_temp.db", "w+b");
+  if (!newFp)
+  {
+    perror("Impossibile creare un nuovo file per rimuovere un elemento");
+    return false;
+  }
+
+  meta->count--;
+  updatePersonMeta(newFp, meta);
+
+  const size_t end = getEndAndSeekToFirstPerson(fp);
+  while (ftell(fp) < end)
+  {
+    Person person;
+    loadPerson(fp, &person);
+    if (person.id != id)
+    {
+      insertPerson(newFp, &person, NULL);
+    }
+    freePerson(&person);
+  }
+
+  fclose(fp);
+  *fpPtr = newFp;
+  remove("people.db");
+  rename("people_temp.db", "people.db");
+
+  return true;
 }
 
 void freePerson(Person* person)

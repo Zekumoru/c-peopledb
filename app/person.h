@@ -28,7 +28,11 @@ Person* readPeople(FILE* fp);
 
 void insertPerson(FILE* fp, Person* person, PersonMeta* meta);
 
+Person* findPersonById(FILE* fp, const size_t id);
+
 Person* findPerson(FILE* fp, const char* name);
+
+bool deletePerson(FILE** fpPtr, PersonMeta* meta, const size_t id);
 
 void freePerson(Person* person);
 
