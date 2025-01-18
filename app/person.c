@@ -1,4 +1,5 @@
 #include "person.h"
+#include <string.h>
 
 FILE* initPersonDB(PersonMeta* meta)
 {
@@ -10,7 +11,7 @@ FILE* initPersonDB(PersonMeta* meta)
     if (!fp)
     {
       perror("Impossibile aprire/creare people.db");
-      return EXIT_FAILURE;
+      return fp;
     }
   }
 
@@ -50,6 +51,34 @@ void loadPersonMeta(FILE* fp, PersonMeta* meta)
   fseek(fp, oldCursor, SEEK_SET);
 }
 
+size_t seekToFirstPerson(FILE* fp)
+{
+  fseek(fp, sizeof(PersonMeta), SEEK_SET);
+  return ftell(fp);
+}
+
+Person* readPeople(FILE* fp, PersonMeta* meta)
+{
+  seekToFirstPerson(fp);
+  Person* people = (Person*)malloc(sizeof(Person) * meta->count);
+  for (size_t i = 0; i < meta->count; i++)
+  {
+    Person* person = &people[i];
+
+    fread(&person->id, sizeof(size_t), 1, fp);
+
+    fread(&person->age, sizeof(int), 1, fp);
+
+    // Read name
+    size_t nameLength;
+    fread(&nameLength, sizeof(size_t), 1, fp);
+    person->name = (char*)malloc(nameLength);
+    fread(person->name, sizeof(char), nameLength, fp);
+  }
+
+  return people;
+}
+
 void insertPerson(FILE* fp, Person* person, PersonMeta* meta)
 {
   person->id = meta->autoIncrementId;
@@ -70,4 +99,12 @@ void insertPerson(FILE* fp, Person* person, PersonMeta* meta)
 void freePerson(Person* person)
 {
   free(person->name);
+}
+
+void freePeople(Person* people, size_t size)
+{
+  for (size_t i = 0; i < size; i++)
+  {
+    freePerson(&people[i]);
+  }
 }

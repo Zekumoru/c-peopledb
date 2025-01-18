@@ -23,8 +23,12 @@ void updatePersonMeta(FILE* fp, PersonMeta* meta);
 
 void loadPersonMeta(FILE* fp, PersonMeta* meta);
 
+Person* readPeople(FILE* fp, PersonMeta* meta);
+
 void insertPerson(FILE* fp, Person* person, PersonMeta* meta);
 
 void freePerson(Person* person);
+
+void freePeople(Person* people, size_t size);
 
 #endif // PERSON_H
