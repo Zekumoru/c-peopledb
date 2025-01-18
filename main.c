@@ -62,7 +62,7 @@ int main()
     {
       printf("Crea una nuova persona\n\n");
       printf("Inserisci il nome della persona: ");
-      char* name = getline();
+      char* name = getln();
       printf("Inserisci l'et\u00e0 della persona: ");
       int age = getValidAge();
 
@@ -142,7 +142,7 @@ int main()
       if (person)
       {
         printf("Inserisci il nuovo nome della persona (vecchio: %s): ", person->name);
-        char* newName = getline();
+        char* newName = getln();
         printf("Inserisci la nuova et\u00e0 della persona (vecchio: %d): ", person->age);
         int newAge = getValidAge();
 
@@ -199,7 +199,6 @@ int getValidAge()
   int age;
   do
   {
-    printf("Inserisci un'et\u00e0 valida (%d-%d): ", min, max);
     age = getint();
 
     if (age < min || age > max)

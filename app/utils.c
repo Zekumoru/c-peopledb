@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-char* getline()
+char* getln()
 {
   size_t size = 1;
   size_t capacity = 1;
@@ -32,7 +32,7 @@ char* getline()
 
 int getint()
 {
-  char* input = getline();
+  char* input = getln();
   int num = atoi(input);
   free(input);
   return num;
@@ -40,7 +40,7 @@ int getint()
 
 double getdbl()
 {
-  char* input = getline();
+  char* input = getln();
   double num = strtod(input, NULL);
   free(input);
   return num;
@@ -54,6 +54,6 @@ void clearScreen()
 void pause()
 {
   printf("Premere 'invio' per continuare...");
-  char* temp = getline();
+  char* temp = getln();
   free(temp);
 }

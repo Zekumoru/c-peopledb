@@ -18,7 +18,7 @@
  * @warning Il chiamante è responsabile di liberare la memoria
  *          utilizzando `free()` quando non è più necessaria.
  */
-char* getline();
+char* getln();
 
 /**
  * @brief Legge un intero dallo standard input (stdin).
