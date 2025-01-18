@@ -203,7 +203,8 @@ bool updatePerson(FILE** fpPtr, PersonMeta* meta, const size_t id, Person* updat
     return false;
   }
 
-  insertPerson(*fpPtr, updatedPerson, meta);
+  insertPerson(*fpPtr, updatedPerson, NULL);
+  meta->count++;
   return true;
 }
 
