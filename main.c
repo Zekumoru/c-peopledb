@@ -1,21 +1,40 @@
+/**
+ * Applicazione per la gestione di un database di persone che è salvato in
+ * un file binario.
+ *
+ * Questo programma consente di interagire con un database di persone tramite
+ * un menu interattivo. Le funzionalità includono:
+ * - Creare una nuova persona.
+ * - Trovare una persona per ID.
+ * - Visualizzare tutte le persone.
+ * - Eliminare una persona.
+ * - Aggiornare una persona esistente.
+ */
 #include "app/person.h"
 #include "app/utils.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-void printMenu()
-{
-  clearScreen();
-  printf("--- Menu | PeopleDB ---\n");
-  printf("1. Crea una nuova persona\n");
-  printf("2. Trova una persona per ID\n");
-  printf("3. Visualizza tutte le persone\n");
-  printf("4. Elimina una persona\n");
-  printf("5. Aggiorna una persona esistente\n");
-  printf("6. Esci\n");
-  printf("Scegli un'opzione: ");
-}
+/**
+ * @brief Stampa il menu principale dell'applicazione.
+ *
+ * La funzione mostra all'utente un elenco di opzioni per interagire
+ * con il database delle persone. Ogni opzione corrisponde a una
+ * funzionalità specifica che l'utente può selezionare.
+ */
+void printMenu();
+
+/**
+ * @brief Richiede all'utente di inserire un'età valida e verifica
+ *        che sia all'interno di un intervallo specificato.
+ *
+ * La funzione continua a chiedere l'input finché non viene
+ * fornita un'età valida.
+ *
+ * @return int Un'età valida.
+ */
+int getValidAge();
 
 int main()
 {
@@ -45,7 +64,7 @@ int main()
       printf("Inserisci il nome della persona: ");
       char* name = getline();
       printf("Inserisci l'et\u00e0 della persona: ");
-      int age = getint();
+      int age = getValidAge();
 
       Person person = {0, age, name};
       insertPerson(fp, &person, &meta);
@@ -125,7 +144,7 @@ int main()
         printf("Inserisci il nuovo nome della persona (vecchio: %s): ", person->name);
         char* newName = getline();
         printf("Inserisci la nuova et\u00e0 della persona (vecchio: %d): ", person->age);
-        int newAge = getint();
+        int newAge = getValidAge();
 
         Person updatedPerson = {id, newAge, newName};
         updatePerson(&fp, &meta, id, &updatedPerson);
@@ -157,4 +176,41 @@ int main()
 
   fclose(fp);
   return 0;
+}
+
+void printMenu()
+{
+  clearScreen();
+  printf("--- Menu | PeopleDB ---\n");
+  printf("1. Crea una nuova persona\n");
+  printf("2. Trova una persona per ID\n");
+  printf("3. Visualizza tutte le persone\n");
+  printf("4. Elimina una persona\n");
+  printf("5. Aggiorna una persona esistente\n");
+  printf("6. Esci\n");
+  printf("Scegli un'opzione: ");
+}
+
+int getValidAge()
+{
+  const int min = 1;
+  const int max = 999;
+
+  int age;
+  do
+  {
+    printf("Inserisci un'et\u00e0 valida (%d-%d): ", min, max);
+    age = getint();
+
+    if (age < min || age > max)
+    {
+      printf("L'et\u00e0 deve essere tra %d e %d. Riprova.\n", min, max);
+    }
+    else
+    {
+      break;
+    }
+  } while (1);
+
+  return age;
 }
