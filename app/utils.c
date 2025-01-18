@@ -50,3 +50,10 @@ void clearScreen()
 {
   printf("\033[2J\033[1;1H");
 }
+
+void pause()
+{
+  printf("Premere 'invio' per continuare...");
+  char* temp = getline();
+  free(temp);
+}

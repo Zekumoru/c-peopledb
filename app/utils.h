@@ -53,4 +53,9 @@ double getdbl();
  */
 void clearScreen();
 
+/**
+ * @brief Mette in pausa il console fino all'invio.
+ */
+void pause();
+
 #endif // UTILS_H
