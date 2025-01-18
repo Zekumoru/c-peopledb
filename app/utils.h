@@ -43,4 +43,14 @@ int getint();
  */
 double getdbl();
 
+/**
+ * @brief Cancella il contenuto dello schermo della console.
+ *
+ * Utilizza i codici di escape ANSI per pulire lo schermo e riportare il cursore
+ * alla posizione iniziale (riga 1, colonna 1).
+ *
+ * @note Funziona correttamente solo su terminali che supportano i codici di escape ANSI.
+ */
+void clearScreen();
+
 #endif // UTILS_H

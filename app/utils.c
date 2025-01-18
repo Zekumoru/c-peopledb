@@ -45,3 +45,8 @@ double getdbl()
   free(input);
   return num;
 }
+
+void clearScreen()
+{
+  printf("\033[2J\033[1;1H");
+}
