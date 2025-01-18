@@ -1,6 +1,7 @@
 #include "utils.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 char* getline()
 {
@@ -27,4 +28,20 @@ char* getline()
   line[size - 1] = '\0';
 
   return line;
+}
+
+int getint()
+{
+  char* input = getline();
+  int num = atoi(input);
+  free(input);
+  return num;
+}
+
+double getdbl()
+{
+  char* input = getline();
+  double num = strtod(input, NULL);
+  free(input);
+  return num;
 }

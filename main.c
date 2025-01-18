@@ -1,17 +1,27 @@
+#include "app/person.h"
 #include "app/utils.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 int main()
 {
-  char* input;
+  PersonMeta personMeta;
+  FILE* fp = initPersonDB(&personMeta);
 
-  printf("Enter string: ");
-  input = getline();
+  Person person;
 
-  printf("You entered: %s\n", input);
+  printf("Enter name: ");
+  person.name = getline();
 
-  free(input);
+  printf("Enter age: ");
+  person.age = getint();
+
+  insertPerson(fp, &person, &personMeta);
+
+  freePerson(&person);
+
+  fclose(fp);
 
   return 0;
 }

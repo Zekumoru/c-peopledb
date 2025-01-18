@@ -55,6 +55,7 @@
     "iomanip": "cpp",
     "sstream": "cpp",
     "*.tpp": "cpp",
-    "string.h": "c"
+    "string.h": "c",
+    "utils.h": "c"
   }
 }

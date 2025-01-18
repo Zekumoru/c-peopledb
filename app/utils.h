@@ -20,4 +20,8 @@
  */
 char* getline();
 
+int getint();
+
+double getdbl();
+
 #endif // UTILS_H
