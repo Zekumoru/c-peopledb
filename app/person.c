@@ -57,23 +57,29 @@ size_t seekToFirstPerson(FILE* fp)
   return ftell(fp);
 }
 
+char* getPersonName(FILE* fp)
+{
+  size_t nameLength;
+  fread(&nameLength, sizeof(size_t), 1, fp);
+  char* name = (char*)malloc(nameLength);
+  fread(name, sizeof(char), nameLength, fp);
+  return name;
+}
+
+void loadPerson(FILE* fp, Person* person)
+{
+  fread(&person->id, sizeof(size_t), 1, fp);
+  fread(&person->age, sizeof(int), 1, fp);
+  person->name = getPersonName(fp);
+}
+
 Person* readPeople(FILE* fp, PersonMeta* meta)
 {
   seekToFirstPerson(fp);
   Person* people = (Person*)malloc(sizeof(Person) * meta->count);
   for (size_t i = 0; i < meta->count; i++)
   {
-    Person* person = &people[i];
-
-    fread(&person->id, sizeof(size_t), 1, fp);
-
-    fread(&person->age, sizeof(int), 1, fp);
-
-    // Read name
-    size_t nameLength;
-    fread(&nameLength, sizeof(size_t), 1, fp);
-    person->name = (char*)malloc(nameLength);
-    fread(person->name, sizeof(char), nameLength, fp);
+    loadPerson(fp, &people[i]);
   }
 
   return people;
@@ -94,6 +100,27 @@ void insertPerson(FILE* fp, Person* person, PersonMeta* meta)
   size_t nameLength = strlen(person->name) + 1; // +1 because of '\0'
   fwrite(&nameLength, sizeof(size_t), 1, fp);
   fwrite(person->name, sizeof(char), nameLength, fp);
+}
+
+Person* findPerson(FILE* fp, const char* name)
+{
+  fseek(fp, 0, SEEK_END);
+  const size_t end = ftell(fp);
+  seekToFirstPerson(fp);
+
+  while (ftell(fp) < end)
+  {
+    Person* person = (Person*)malloc(sizeof(Person));
+    loadPerson(fp, person);
+    if (strcmp(person->name, name) == 0)
+    {
+      return person;
+    }
+    freePerson(person);
+    free(person);
+  }
+
+  return NULL;
 }
 
 void freePerson(Person* person)

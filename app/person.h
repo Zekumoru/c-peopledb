@@ -1,6 +1,7 @@
 #ifndef PERSON_H
 #define PERSON_H
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -26,6 +27,8 @@ void loadPersonMeta(FILE* fp, PersonMeta* meta);
 Person* readPeople(FILE* fp, PersonMeta* meta);
 
 void insertPerson(FILE* fp, Person* person, PersonMeta* meta);
+
+Person* findPerson(FILE* fp, const char* name);
 
 void freePerson(Person* person);
 
