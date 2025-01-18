@@ -56,7 +56,12 @@ int main()
   freePeople(people, personMeta.count);
   free(people);
 
-  deletePerson(&fp, &personMeta, 1);
+  Person* person = findPersonById(fp, 1);
+  free(person->name);
+  person->name = strdup("UpdatedBar");
+  updatePerson(&fp, &personMeta, person->id, person);
+  freePerson(person);
+  free(person);
 
   people = readPeople(fp);
   printPeople(people, personMeta.count);

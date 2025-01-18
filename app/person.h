@@ -34,6 +34,8 @@ Person* findPerson(FILE* fp, const char* name);
 
 bool deletePerson(FILE** fpPtr, PersonMeta* meta, const size_t id);
 
+bool updatePerson(FILE** fpPtr, PersonMeta* meta, const size_t id, Person* updatedPerson);
+
 void freePerson(Person* person);
 
 void freePeople(Person* people, size_t size);

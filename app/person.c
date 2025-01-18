@@ -195,6 +195,18 @@ bool deletePerson(FILE** fpPtr, PersonMeta* meta, const size_t id)
   return true;
 }
 
+bool updatePerson(FILE** fpPtr, PersonMeta* meta, const size_t id, Person* updatedPerson)
+{
+  bool deleted = deletePerson(fpPtr, meta, id);
+  if (!deleted)
+  {
+    return false;
+  }
+
+  insertPerson(*fpPtr, updatedPerson, meta);
+  return true;
+}
+
 void freePerson(Person* person)
 {
   free(person->name);
