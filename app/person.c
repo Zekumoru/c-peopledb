@@ -207,6 +207,21 @@ bool updatePerson(FILE** fpPtr, PersonMeta* meta, const size_t id, Person* updat
   return true;
 }
 
+void printPeople(Person* people, size_t size)
+{
+  printf("%-5s | %-30s | %-10s\n", "ID", "Name", "Age");
+
+  for (size_t i = 0; i < 5 + 30 + 10 + 3 * 2; i++)
+    printf("-");
+  printf("\n");
+
+  for (size_t i = 0; i < size; i++)
+  {
+    Person* person = &people[i];
+    printf("%-5ld | %-30s | %-10d\n", person->id, person->name, person->age);
+  }
+}
+
 void freePerson(Person* person)
 {
   free(person->name);
