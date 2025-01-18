@@ -57,6 +57,14 @@ size_t seekToFirstPerson(FILE* fp)
   return ftell(fp);
 }
 
+const size_t getEndAndSeekToFirstPerson(FILE* fp)
+{
+  fseek(fp, 0, SEEK_END);
+  const size_t end = ftell(fp);
+  const size_t start = seekToFirstPerson(fp);
+  return end;
+}
+
 char* getPersonName(FILE* fp)
 {
   size_t nameLength;
@@ -73,11 +81,11 @@ void loadPerson(FILE* fp, Person* person)
   person->name = getPersonName(fp);
 }
 
-Person* readPeople(FILE* fp, PersonMeta* meta)
+Person* readPeople(FILE* fp)
 {
-  seekToFirstPerson(fp);
-  Person* people = (Person*)malloc(sizeof(Person) * meta->count);
-  for (size_t i = 0; i < meta->count; i++)
+  const size_t end = getEndAndSeekToFirstPerson(fp);
+  Person* people = (Person*)malloc(end - ftell(fp));
+  for (size_t i = 0; ftell(fp) < end; i++)
   {
     loadPerson(fp, &people[i]);
   }
@@ -104,10 +112,7 @@ void insertPerson(FILE* fp, Person* person, PersonMeta* meta)
 
 Person* findPerson(FILE* fp, const char* name)
 {
-  fseek(fp, 0, SEEK_END);
-  const size_t end = ftell(fp);
-  seekToFirstPerson(fp);
-
+  const size_t end = getEndAndSeekToFirstPerson(fp);
   while (ftell(fp) < end)
   {
     Person* person = (Person*)malloc(sizeof(Person));

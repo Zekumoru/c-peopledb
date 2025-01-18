@@ -48,24 +48,11 @@ int main()
   // populatePeople(fp, &personMeta);
   // printf("Database has been populated!\n");
 
-  // Person* people = readPeople(fp, &personMeta);
-  // printPeople(people, personMeta.count);
+  Person* people = readPeople(fp);
+  printPeople(people, personMeta.count);
 
-  // freePeople(people, personMeta.count);
-  // free(people);
-
-  Person* person = findPerson(fp, "Foo");
-  if (person != NULL)
-  {
-    printPeople(person, 1);
-  }
-  else
-  {
-    printf("Not found!");
-  }
-
-  freePerson(person);
-  free(person);
+  freePeople(people, personMeta.count);
+  free(people);
 
   fclose(fp);
 

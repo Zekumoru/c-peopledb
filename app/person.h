@@ -24,7 +24,7 @@ void updatePersonMeta(FILE* fp, PersonMeta* meta);
 
 void loadPersonMeta(FILE* fp, PersonMeta* meta);
 
-Person* readPeople(FILE* fp, PersonMeta* meta);
+Person* readPeople(FILE* fp);
 
 void insertPerson(FILE* fp, Person* person, PersonMeta* meta);
 
