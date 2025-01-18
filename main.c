@@ -1,7 +1,17 @@
+#include "app/utils.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 int main()
 {
-  printf("Hello world\n");
+  char* input;
+
+  printf("Enter string: ");
+  input = getline();
+
+  printf("You entered: %s\n", input);
+
+  free(input);
+
   return 0;
 }
