@@ -9,6 +9,8 @@
  * - Visualizzare tutte le persone.
  * - Eliminare una persona.
  * - Aggiornare una persona esistente.
+ * - Salvare il db a un file JSON.
+ * - Caricare il db da un file JSON.
  */
 #include "app/json-parser.h"
 #include "app/person.h"
