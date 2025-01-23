@@ -36,6 +36,19 @@ void printMenu();
  */
 int getValidAge();
 
+typedef enum MenuOption
+{
+  NO_CHOSEN_OPTION = 0,
+  CREATE_PERSON_OPTION,
+  FIND_PERSON_OPTION,
+  LIST_PEOPLE_OPTION,
+  DELETE_PERSON_OPTION,
+  UPDATE_PERSON_OPTION,
+  SAVE_TO_JSON_OPTION,
+  LOAD_JSON_OPTION,
+  EXIT_OPTION,
+} MenuOption;
+
 int main()
 {
   FILE* fp = NULL;
@@ -58,7 +71,7 @@ int main()
 
     switch (choice)
     {
-    case 1:
+    case CREATE_PERSON_OPTION:
     {
       printf("Crea una nuova persona\n\n");
       printf("Inserisci il nome della persona: ");
@@ -73,7 +86,7 @@ int main()
 
       break;
     }
-    case 2:
+    case FIND_PERSON_OPTION:
     {
       printf("Trova una persona per ID\n\n");
       printf("Inserisci l'ID della persona: ");
@@ -94,7 +107,7 @@ int main()
 
       break;
     }
-    case 3:
+    case LIST_PEOPLE_OPTION:
     {
       printf("Visualizza tutte le persone\n\n");
       Person* people = readPeople(fp);
@@ -111,7 +124,7 @@ int main()
 
       break;
     }
-    case 4:
+    case DELETE_PERSON_OPTION:
     {
       printf("Elimina una persona\n\n");
       printf("Inserisci l'ID della persona da eliminare: ");
@@ -130,7 +143,7 @@ int main()
 
       break;
     }
-    case 5:
+    case UPDATE_PERSON_OPTION:
     {
       printf("Aggiorna una persona esistente\n\n");
       printf("Inserisci l'ID della persona da aggiornare: ");
@@ -159,7 +172,17 @@ int main()
 
       break;
     }
-    case 6:
+    case SAVE_TO_JSON_OPTION:
+    {
+      printf("\nTo be implemented\n");
+      break;
+    }
+    case LOAD_JSON_OPTION:
+    {
+      printf("\nTo be implemented\n");
+      break;
+    }
+    case EXIT_OPTION:
       printf("Arrivederci!\n");
       break;
     default:
@@ -167,12 +190,12 @@ int main()
       break;
     }
 
-    if (choice != 6)
+    if (choice != EXIT_OPTION)
     {
       printf("\n");
       pause();
     }
-  } while (choice != 6);
+  } while (choice != EXIT_OPTION);
 
   fclose(fp);
   return 0;
@@ -187,7 +210,9 @@ void printMenu()
   printf("3. Visualizza tutte le persone\n");
   printf("4. Elimina una persona\n");
   printf("5. Aggiorna una persona esistente\n");
-  printf("6. Esci\n");
+  printf("6. Salvare tutte le persone in JSON\n");
+  printf("7. Caricare persone da un file JSON\n");
+  printf("8. Esci\n");
   printf("Scegli un'opzione: ");
 }
 
