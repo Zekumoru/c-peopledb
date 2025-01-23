@@ -10,6 +10,7 @@
  * - Eliminare una persona.
  * - Aggiornare una persona esistente.
  */
+#include "app/json-parser.h"
 #include "app/person.h"
 #include "app/utils.h"
 #include <stdio.h>
@@ -181,6 +182,7 @@ int main()
 
       if (personDbToJson(fp, filename))
       {
+
         printf("\nFile JSON salvato!\n");
       }
       else
@@ -193,7 +195,50 @@ int main()
     }
     case LOAD_JSON_OPTION:
     {
-      printf("\nTo be implemented\n");
+      printf("Inserisci il nome del file JSON da caricare: ");
+      char* filename = getln();
+
+      FILE* jsonFile = fopen(filename, "r");
+
+      if (!jsonFile)
+      {
+        printf("\nErrore: Non riesce aprire il file JSON '%s'\n", filename);
+        free(filename);
+        break;
+      }
+
+      free(filename);
+
+      LexError lexError;
+      TokenManager* manager = lex(jsonFile, &lexError);
+      if (lexError.type != NO_LEX_ERROR)
+      {
+        printLexError(&lexError);
+        break;
+      }
+
+      ParserError parserError;
+      parserError.type = NO_PARSER_ERROR;
+      JsonNode* root = parse(jsonFile, manager, &parserError);
+      if (parserError.type != NO_PARSER_ERROR)
+      {
+        printParseError(&parserError);
+        break;
+      }
+
+      PersonJsonError errorCode = loadPersonDbFromJson(&fp, &meta, root);
+      if (errorCode != NO_PERSON_JSON_ERROR)
+      {
+        printf("\nErrore: Non riesce caricare il file JSON, verificare che il sintasso del file sia giusto.\n");
+        remove("people_temp.db");
+      }
+      else
+      {
+        printf("\nCaricato file JSON nel DB con successo!\n");
+      }
+
+      freeJsonTree(root);
+      fclose(jsonFile);
       break;
     }
     case EXIT_OPTION:

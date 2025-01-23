@@ -1,4 +1,5 @@
 #include "person.h"
+#include "json-parser.h"
 #include "utils.h"
 #include <stdlib.h>
 #include <string.h>
@@ -276,6 +277,102 @@ bool personDbToJson(FILE* fp, const char* filename)
 
   fclose(jsonFile);
   return true;
+}
+
+PersonJsonError loadPersonDbFromJson(FILE** fpPtr, PersonMeta* meta, JsonNode* rootNode)
+{
+  FILE* fp = *fpPtr;
+  FILE* newFp = fopen("people_temp.db", "w+b");
+  if (!newFp)
+    return CANNOT_CREATE_PERSON_DB_FILE;
+
+  if (rootNode == NULL)
+    return EXPECTED_JSON_OBJECT;
+
+  if (rootNode->type != OBJECT_NODE || rootNode->vSize < 2)
+    return INVALID_PERSON_JSON_OBJECT;
+
+  // read metadata
+  JsonNode* metadataNode = &rootNode->value.v_object[0];
+
+  if (metadataNode->type != OBJECT_NODE)
+    return EXPECTED_METADATA_OBJECT;
+  if (strcmp(metadataNode->key, "metadata") != 0)
+    return EXPECTED_METADATA_OBJECT;
+
+  if (metadataNode->vSize < 1)
+    return EXPECTED_METADATA_AUTO_ID;
+
+  JsonNode* autoIdNode = &metadataNode->value.v_object[0];
+  if (autoIdNode->type != INTEGER_NODE)
+    return EXPECTED_METADATA_AUTO_ID;
+  if (strcmp(autoIdNode->key, "autoIncrementId") != 0)
+    return EXPECTED_METADATA_AUTO_ID;
+  meta->autoIncrementId = (size_t)autoIdNode->value.v_int;
+
+  if (metadataNode->vSize < 2)
+    return EXPECTED_METADATA_COUNT;
+
+  JsonNode* countNode = &metadataNode->value.v_object[1];
+  if (countNode->type != INTEGER_NODE)
+    return EXPECTED_METADATA_COUNT;
+  if (strcmp(countNode->key, "count") != 0)
+    return EXPECTED_METADATA_COUNT;
+  meta->count = (size_t)countNode->value.v_int;
+
+  updatePersonMeta(newFp, meta);
+
+  // read people
+  JsonNode* peopleArrayNode = &rootNode->value.v_object[1];
+  if (peopleArrayNode->type != ARRAY_NODE)
+    return EXPECTED_PEOPLE_ARRAY;
+  if (strcmp(peopleArrayNode->key, "people") != 0)
+    return EXPECTED_PEOPLE_ARRAY;
+
+  for (size_t i = 0; i < peopleArrayNode->vSize; i++)
+  {
+    JsonNode* personNode = &peopleArrayNode->value.v_array[i];
+    if (personNode->type != OBJECT_NODE)
+      return EXPECTED_PERSON_OBJECT;
+
+    Person person;
+
+    JsonNode* idNode = NULL;
+    JsonNode* ageNode = NULL;
+    JsonNode* nameNode = NULL;
+    for (size_t j = 0; j < personNode->vSize; j++)
+    {
+      JsonNode* propNode = &personNode->value.v_object[j];
+      if (propNode->key == NULL)
+        continue;
+      else if (strcmp(propNode->key, "id") == 0)
+        idNode = propNode;
+      else if (strcmp(propNode->key, "age") == 0)
+        ageNode = propNode;
+      else if (strcmp(propNode->key, "name") == 0)
+        nameNode = propNode;
+    }
+
+    if (idNode->type != INTEGER_NODE)
+      return EXPECTED_PERSON_ID;
+    if (ageNode->type != INTEGER_NODE)
+      return EXPECTED_PERSON_AGE;
+    if (nameNode->type != STRING_NODE)
+      return EXPECTED_PERSON_NAME;
+
+    person.id = idNode->value.v_int;
+    person.age = ageNode->value.v_int;
+    person.name = nameNode->value.v_string;
+
+    insertPerson(newFp, &person, NULL);
+  }
+
+  fclose(fp);
+  *fpPtr = newFp;
+  remove("people.db");
+  rename("people_temp.db", "people.db");
+
+  return NO_PERSON_JSON_ERROR;
 }
 
 void printPeople(Person* people, size_t size)

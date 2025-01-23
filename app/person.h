@@ -6,6 +6,7 @@
 #ifndef PERSON_H
 #define PERSON_H
 
+#include "json-parser.h"
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -137,7 +138,50 @@ bool deletePerson(FILE** fpPtr, PersonMeta* meta, const size_t id);
  */
 bool updatePerson(FILE** fpPtr, PersonMeta* meta, const size_t id, Person* updatedPerson);
 
+/**
+ * @brief Converte un database di persone in formato JSON e lo scrive su file.
+ *
+ * @param fp Puntatore al file in cui scrivere il JSON.
+ * @param filename Nome del file di output.
+ * @return true se la conversione ha avuto successo, false in caso di errore.
+ *
+ * @note La funzione scrive i dati del database delle persone nel
+ *       file specificato in formato JSON.
+ */
 bool personDbToJson(FILE* fp, const char* filename);
+
+/**
+ * @enum PersonJsonError
+ * @brief Enumerazione degli errori possibili durante la conversione
+ *        dal file JSON alla db.
+ */
+typedef enum PersonJsonError
+{
+  NO_PERSON_JSON_ERROR = 0,
+  CANNOT_CREATE_PERSON_DB_FILE,
+  INVALID_PERSON_JSON_OBJECT,
+  EXPECTED_JSON_OBJECT,
+  EXPECTED_METADATA_OBJECT,
+  EXPECTED_METADATA_AUTO_ID,
+  EXPECTED_METADATA_COUNT,
+  EXPECTED_PEOPLE_ARRAY,
+  EXPECTED_PERSON_OBJECT,
+  EXPECTED_PERSON_ID,
+  EXPECTED_PERSON_AGE,
+  EXPECTED_PERSON_NAME
+} PersonJsonError;
+
+/**
+ * @brief Carica un database di persone da un file JSON.
+ *
+ * @param fpPtr Puntatore al puntatore del file del database.
+ * @param meta Puntatore ai metadati.
+ * @param rootNode Puntatore alla radice dell'albero JSON da
+ *                 cui estrarre i dati.
+ * @return Un valore della enumerazione PersonJsonError che indica
+ *         il risultato dell'operazione.
+ */
+PersonJsonError loadPersonDbFromJson(FILE** fpPtr, PersonMeta* meta, JsonNode* rootNode);
 
 /**
  * @brief Stampa l'elenco delle persone.
