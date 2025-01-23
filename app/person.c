@@ -1,4 +1,6 @@
 #include "person.h"
+#include "utils.h"
+#include <stdlib.h>
 #include <string.h>
 
 FILE* initPersonDB(PersonMeta* meta)
@@ -205,6 +207,70 @@ bool updatePerson(FILE** fpPtr, PersonMeta* meta, const size_t id, Person* updat
 
   insertPerson(*fpPtr, updatedPerson, NULL);
   meta->count++;
+  return true;
+}
+
+bool personDbToJson(FILE* fp, const char* filename)
+{
+  PersonMeta meta;
+  loadPersonMeta(fp, &meta);
+
+  FILE* jsonFile = fopen(filename, "w");
+  if (!jsonFile)
+    return false;
+
+  fputc('{', jsonFile); // start root object
+
+  fputs("\"metadata\":{", jsonFile);
+  fputs("\"autoIncrementId\":", jsonFile);
+
+  char* autoIdStr = size_tToString(meta.autoIncrementId);
+  fputs(autoIdStr, jsonFile);
+  free(autoIdStr);
+
+  char* countStr = size_tToString(meta.count);
+  fputs(countStr, jsonFile);
+  free(countStr);
+
+  fputc('}', jsonFile); // end metadata object
+  fputc(',', jsonFile);
+
+  fputs("\"people\":[", jsonFile);
+
+  const size_t end = getEndAndSeekToFirstPerson(fp);
+  while (ftell(fp) < end)
+  {
+    Person person;
+    loadPerson(fp, &person);
+
+    fputc('{', jsonFile); // start person object
+
+    fputs("\"id\":", jsonFile);
+    char* idStr = size_tToString(person.id);
+    fputs(idStr, jsonFile);
+    free(idStr);
+    fputc(',', jsonFile);
+
+    fputs("\"age\":", jsonFile);
+    char* ageStr = intToString(person.age);
+    fputs(ageStr, jsonFile);
+    free(ageStr);
+    fputc(',', jsonFile);
+
+    fputs("\"name\":", jsonFile);
+    fputc('"', jsonFile);
+    fputs(person.name, jsonFile);
+    fputc('"', jsonFile);
+
+    fputc('}', jsonFile); // end person object
+
+    freePerson(&person);
+  }
+
+  fputc(']', jsonFile); // end people array
+
+  fputc('}', jsonFile); // end root object
+
   return true;
 }
 

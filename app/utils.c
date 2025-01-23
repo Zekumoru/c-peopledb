@@ -1,4 +1,5 @@
 #include "utils.h"
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -56,4 +57,25 @@ void pause()
   printf("Premere 'invio' per continuare...");
   char* temp = getln();
   free(temp);
+}
+
+char* size_tToString(const size_t n)
+{
+  // Get how many digits using log10 and add 1 for '\0'
+  // If n is 0 then length is 2 because there's no log10 of 0
+  const size_t length = n == 0 ? 2 : ceil(log10(n)) + (n == 0 ? 2 : 1);
+  char* str = (char*)malloc(length);
+  sprintf(str, "%ld", n);
+  return str;
+}
+
+char* intToString(const int n)
+{
+  // Get how many digits using log10 and add 1 for '\0'
+  // Add another 1 if negative for '-'
+  // If n is 0 then length is 2 because there's no log10 of 0
+  const size_t length = n == 0 ? 2 : ceil(log10(abs(n))) + (n < 0 ? 2 : 1);
+  char* str = (char*)malloc(length);
+  sprintf(str, "%d", n);
+  return str;
 }

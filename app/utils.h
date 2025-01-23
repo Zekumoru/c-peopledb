@@ -1,6 +1,8 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <stddef.h>
+
 /**
  * @brief Legge una riga di input dallo standard input (stdin) fino a
  *        incontrare un carattere di newline o carriage return.
@@ -57,5 +59,9 @@ void clearScreen();
  * @brief Mette in pausa il console fino all'invio.
  */
 void pause();
+
+char* size_tToString(const size_t n);
+
+char* intToString(const int n);
 
 #endif // UTILS_H

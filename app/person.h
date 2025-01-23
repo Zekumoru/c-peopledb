@@ -137,6 +137,8 @@ bool deletePerson(FILE** fpPtr, PersonMeta* meta, const size_t id);
  */
 bool updatePerson(FILE** fpPtr, PersonMeta* meta, const size_t id, Person* updatedPerson);
 
+bool personDbToJson(FILE* fp, const char* filename);
+
 /**
  * @brief Stampa l'elenco delle persone.
  *

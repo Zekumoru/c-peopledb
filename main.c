@@ -174,7 +174,21 @@ int main()
     }
     case SAVE_TO_JSON_OPTION:
     {
-      printf("\nTo be implemented\n");
+      printf("Inserisci il nome per il file JSON da salvare (non aggiungere l'estensione .json): ");
+      char* filename = getln();
+      filename = (char*)realloc(filename, strlen(filename) + 5);
+      strcat(filename, ".json");
+
+      if (personDbToJson(fp, filename))
+      {
+        printf("\nFile JSON salvato!\n");
+      }
+      else
+      {
+        perror("\nErrore: Non riesce salvare il file JSON\n");
+      }
+
+      free(filename);
       break;
     }
     case LOAD_JSON_OPTION:
