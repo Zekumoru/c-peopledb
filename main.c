@@ -271,6 +271,7 @@ void printMenu()
   printf("5. Aggiorna una persona esistente\n");
   printf("6. Salvare tutte le persone in JSON\n");
   printf("7. Caricare persone da un file JSON\n");
+  printf("   (ATTENTO: Questa operazione sostituisce l'attuale db)\n");
   printf("8. Esci\n");
   printf("Scegli un'opzione: ");
 }
