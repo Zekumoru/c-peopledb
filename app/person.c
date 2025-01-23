@@ -228,6 +228,9 @@ bool personDbToJson(FILE* fp, const char* filename)
   fputs(autoIdStr, jsonFile);
   free(autoIdStr);
 
+  fputc(',', jsonFile);
+
+  fputs("\"count\":", jsonFile);
   char* countStr = size_tToString(meta.count);
   fputs(countStr, jsonFile);
   free(countStr);
@@ -271,6 +274,7 @@ bool personDbToJson(FILE* fp, const char* filename)
 
   fputc('}', jsonFile); // end root object
 
+  fclose(jsonFile);
   return true;
 }
 
